@@ -28,4 +28,11 @@ if __name__ == '__main__':
     if name.lower() in lower_items:
         display_data(name.lower())
     else:
-        print(f"No data for {name}")
+        match_found = False
+        for word in name.split(' '):
+            for item in item_df["item_name"].values:
+                if word.lower() in item.lower():
+                    display_data(item.lower())
+                    match_found = True
+        if not match_found:
+            print(f"No data for {name}")
