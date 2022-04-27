@@ -43,8 +43,8 @@ class Rune():
         self.value = 0
 
     def name(self, name):
-        formattedName = f"{name[0].upper()}{name[1:].lower()}"
-        self.rune_name = formattedName
+        formatted_name = f"{name[0].upper()}{name[1:].lower()}"
+        self.rune_name = formatted_name
         for rune in RuneOrder:
             if rune.name == self.rune_name:
                 self.value = rune.value
@@ -55,13 +55,18 @@ class Rune():
             return self.rune_name == other.rune_name
         else:
             return False
+
     def __lt__(self, other):
         if (isinstance(other, Rune)):
             return self.value < other.value
         else:
             return False
+
     def __gt__(self, other):
         if (isinstance(other, Rune)):
             return self.value > other.value
         else:
             return False
+
+    def __str__(self):
+        return f'{self.rune_name} Rune'
