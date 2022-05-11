@@ -8,7 +8,7 @@ from Gem import Gem
 
 class MuleManagerTest(unittest.TestCase):
     def test_mm_instantiation(self):
-        path = "/users/isaiah/.d2mm/save"
+        path = "/home/isaiah/.d2mm/save"
         mm = MuleManager().save_path(path)
         self.assertTrue(isinstance(mm, MuleManager))
         self.assertEqual(mm.save_file_path, path)
@@ -96,8 +96,67 @@ class MuleManagerTest(unittest.TestCase):
         for _ in range(5):
             mule.add_item(Rune().name("Ber"))
             mule.add_item(Gem().gem_type("Topaz").quality("Perfect"))
-        print(mule.list_inventory_with_indices())
+        # print(mule.list_inventory_with_indices())
 
+    def test_mulemanager_characters(self):
+        path = "/home/isaiah/.d2mm/save"
+        mm = MuleManager().save_path(path)
+        mm.add_character(Character().name("Mule1"))
+        self.assertEqual(1, mm.num_characters())
+
+    def test_character_get_inventory(self):
+        expected_inventory = []
+        mule = Character().name("Mule1")
+        soj = Item().name("The Stone Of Jordan").rolls(["+7 lightning damage"]).space(1)
+        expected_inventory += [soj]
+        mule.add_item(soj)
+        for _ in range(5):
+            mule.add_item(Rune().name("Ber"))
+            mule.add_item(Gem().gem_type("Topaz").quality("Perfect"))
+            expected_inventory += [Rune().name("Ber")]
+            expected_inventory += [Gem().gem_type("Topaz").quality("Perfect")]
+        self.assertCountEqual(expected_inventory, mule.get_inventory())
+
+    def test_character_comparison(self):
+        mule = Character().name("Mule1")
+        mule2 = Character().name("Mule1")
+        mule3 = Character().name("Mule1")
+        soj = Item().name("The Stone Of Jordan").rolls(["+7 lightning damage"]).space(1)
+        mule.add_item(soj)
+        mule2.add_item(soj)
+        mule3.add_item(soj)
+        for _ in range(5):
+            mule.add_item(Rune().name("Ber"))
+            mule.add_item(Gem().gem_type("Topaz").quality("Perfect"))
+            mule2.add_item(Rune().name("Ber"))
+            mule2.add_item(Gem().gem_type("Topaz").quality("Perfect"))
+        mule3.add_item(Rune().name("Eld"))
+        self.assertEqual(mule, mule2)
+        self.assertNotEqual(mule,mule3)
+
+    def test_mulemanager_save_and_load(self):
+        path = "/home/isaiah/.d2mm/save"
+        mm = MuleManager().save_path(path)
+        mule = Character().name("Mule1")
+        soj = Item().name("The Stone Of Jordan").rolls(["+7 lightning damage"]).space(1)
+        mule.add_item(soj)
+        mm.add_character(mule)
+        mm.save()
+        mm2 = MuleManager().save_path(path)
+        mm2.load()
+        for i in range(len(mm.characters)):
+            self.assertEqual(mm.characters[i], mm2.characters[i])
+
+    def test_mulemanager_character_listing(self):
+        path = "/home/isaiah/.d2mm/save"
+        mm = MuleManager().save_path(path)
+        mule1 = Character().name("Mule1")
+        mule2 = Character().name("Mule2")
+        mule3 = Character().name("Mule3")
+        mm.add_character(mule1)
+        mm.add_character(mule2)
+        mm.add_character(mule3)
+        print(mm.list_characters_with_indices())
 
 
 if __name__ == "__main__":

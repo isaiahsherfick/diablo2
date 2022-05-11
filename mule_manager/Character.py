@@ -42,6 +42,16 @@ class Character:
             self.held_gems.append(item)
             self.inventory_size -= 1
 
+    def get_inventory(self):
+        inventory = []
+        for i in range(len(self.held_items)):
+            inventory += [self.held_items[i]]
+        for i in range(len(self.held_runes)):
+            inventory += [self.held_runes[i]]
+        for i in range(len(self.held_gems)):
+            inventory += [self.held_gems[i]]
+        return inventory
+
     def list_inventory_with_indices(self):
         rstr = f'Items:'
         for i in range(len(self.held_items)):
@@ -66,3 +76,17 @@ class Character:
     def __str__(self):
         rstr = f'{self.character_name}:\t{len(self.held_items)} items\t{len(self.held_runes)} runes\t{len(self.held_gems)} gems\t{self.inventory_size} remaining inventory tiles'
         return rstr
+
+    def __eq__(self, other):
+        if (isinstance(other, Character)):
+            my_inventory = self.get_inventory()
+            their_inventory = other.get_inventory()
+            if (len(my_inventory) == len(their_inventory)):
+                for i in range(len(their_inventory)):
+                    item = their_inventory[i]
+                    for j in range(len(my_inventory)):
+                        if (my_inventory[j] == item):
+                            my_inventory.pop(j)
+                            break
+                return len(my_inventory) == 0
+        return False
